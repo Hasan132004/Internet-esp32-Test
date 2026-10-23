@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>LED Bulb Control</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        padding: 1rem;
+        background: #f3f6f9;
+        color: #182230;
+        font: 16px/1.5 system-ui, sans-serif;
+      }
+      main {
+        width: min(100%, 24rem);
+        padding: 2rem;
+        border: 1px solid #d7dce2;
+        border-radius: 18px;
+        background: white;
+        box-shadow: 0 8px 30px #15223812;
+        text-align: center;
+      }
+      h1 { margin: 0 0 1.5rem; font-size: 1.6rem; }
+      .bulb {
+        width: 4.5rem;
+        height: 4.5rem;
+        margin: 0 auto 1.5rem;
+        border-radius: 50%;
+        background: #dce3ea;
+        box-shadow: inset 0 -8px 0 #cbd5df;
+        transition: background .2s, box-shadow .2s;
+      }
+      .bulb.on { background: #ffd34d; box-shadow: 0 0 32px #ffcb3d88, inset 0 -8px 0 #edb92d; }
+      .state { margin: 0 0 1.25rem; font-weight: 700; }
+      .buttons { display: flex; justify-content: center; gap: .75rem; }
+      button {
+        min-width: 6rem;
+        border: 0;
+        border-radius: 9px;
+        padding: .8rem 1.2rem;
+        color: white;
+        background: #087443;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      button.off { background: #394554; }
+      button:focus-visible { outline: 3px solid #68a8ff; outline-offset: 3px; }
+      .notice { margin: 1.25rem 0 0; color: #586779; font-size: .9rem; }
+      .result { min-height: 1.5em; margin: .8rem 0 0; color: #334155; font-size: .9rem; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>LED Bulb</h1>
+      <div id="bulb" class="bulb" role="img" aria-label="Bulb is off"></div>
+      <p id="state" class="state">OFF</p>
+      <div class="buttons">
+        <button id="on" type="button" aria-pressed="false">ON</button>
+        <button id="off" class="off" type="button" aria-pressed="true">OFF</button>
+      </div>
+      <p class="notice">Website preview only. This page is not connected to an ESP32.</p>
+      <p id="result" class="result" role="status" aria-live="polite">Choose ON or OFF.</p>
+    </main>
+    <script>
+      const bulb = document.querySelector("#bulb");
+      const state = document.querySelector("#state");
+      const result = document.querySelector("#result");
+      const buttons = { on: document.querySelector("#on"), off: document.querySelector("#off") };
+
+      function selectState(value) {
+        const isOn = value === "on";
+        bulb.classList.toggle("on", isOn);
+        bulb.setAttribute("aria-label", `Bulb preview is ${value}`);
+        state.textContent = value.toUpperCase();
+        buttons.on.setAttribute("aria-pressed", String(isOn));
+        buttons.off.setAttribute("aria-pressed", String(!isOn));
+        result.textContent = `${value.toUpperCase()} selected in the website preview; the physical bulb was not switched.`;
+      }
+
+      buttons.on.addEventListener("click", () => selectState("on"));
+      buttons.off.addEventListener("click", () => selectState("off"));
+    </script>
+  </body>
+</html>
